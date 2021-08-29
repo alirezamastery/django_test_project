@@ -1,0 +1,69 @@
+{% extends "blog/base.html" %}
+{% load app_extras %}
+
+{% block content %}
+    {% if product_page_obj %}
+        <form method="GET">
+            <fieldset class="form-group">
+                {{ order_by_form.ordering.errors }}
+                <label for="{{ ordering_form.ordering.id_for_label }}">مرتب سازی بر اساس:</label>
+                {{ order_by_form.ordering }}
+                <input type="submit" value="مرتب سازی">
+            </fieldset>
+        </form>
+        {#loop through the products#}
+        <div class="row">
+            {% for product in product_page_obj %}
+                <dive class="media content-section col-md-4 ">
+                    <div>
+                        <a href="{{ product.get_absolute_url }}">
+                            <img class="img-thumbnail img-fluid" src="{{ product.image.url }}" alt="Product Picture">
+                        </a>
+                        <h5 class="text-center">
+                            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                        </h5>
+                        <p class="text-center">{{ product.price }} $</p>
+                    </div>
+                </dive>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <p>No Products are available.</p>
+    {% endif %}
+
+    {#show pagination below the list of articles#}
+    {% if is_paginated %}
+
+        {% if product_page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="{% my_url 1 'page' request.GET.urlencode %}">First</a>
+            <a class="btn btn-outline-info mb-4"
+               href="{% my_url product_page_obj.previous_page_number 'page' request.GET.urlencode %}">Previous</a>
+        {% endif %}
+
+        {% for num in product_page_obj.paginator.page_range %}
+            {% if product_page_obj.number == num %}
+                <a class="btn btn-info mb-4" href="{% my_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+            {% elif num > product_page_obj.number|add:'-3' and num < product_page_obj.number|add:'3' %}
+                <a class="btn btn-outline-info mb-4" href="{% my_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if product_page_obj.has_next %}
+            <a class="btn btn-outline-info mb-4"
+               href="{% my_url product_page_obj.next_page_number 'page' request.GET.urlencode %}">Next</a>
+            <a class="btn btn-outline-info mb-4"
+               href="{% my_url product_page_obj.paginator.num_pages 'page' request.GET.urlencode %}">Last</a>
+        {% endif %}
+
+    {% endif %}
+
+{% endblock content %}
+
+{% block side_bar %}
+
+    <div class="content-section">
+        <h2> some things in side bar</h2>
+    </div>
+
+{% endblock %}

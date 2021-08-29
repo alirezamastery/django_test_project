@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <article class="media content-section">
+        <img class="img-thumbnail img-fluid" src="{{ object.image.url }}">
+    </article>
+    <div>
+        <h1 class="article-title">{{ object.name }}</h1>
+        <h3 class="article-title">Price: {{ object.price }} $</h3>
+        <p class="article-content">{{ object.description }}</p>
+    </div>
+    <div>Product Rating: {{ object.get_rating }}</div>
+    {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ rate_form }}
+            <input type="submit" value="rate">
+        </form>
+    {% endif %}
+{% endblock content %}
